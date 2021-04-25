@@ -22,9 +22,22 @@ class Hand:
         return blackjack_title
 
     def hit_me(self):
-        pass
+        self.stand = False
+        while self.score < 21 and self.stand == False:
+            self.hit = input("Hit or Stand?").lower()
+            #print(self.hit[0])
+            if self.hit[0] == "h":
+                self.player_cards.append([random.choice(cards), random.choice(suit)])
+                self.scoring()
+                print(self.player_cards, self.score)
+            elif self.hit[0] == "s":
+                self.stand = True
+                break
+            else:
+                continue
     
     def scoring(self):
+        self.score = 0
         for card in self.player_cards:
             self.score += card_value[card[0]]
         for ace in self.player_cards:
@@ -36,3 +49,4 @@ dealer = Hand()
 print(repr(player_1))
 print(player_1.player_cards, player_1.score)
 print(dealer.player_cards, dealer.score)
+player_1.hit_me()
