@@ -41,6 +41,12 @@ class Hand:
                 self.hand_print()
             elif len(self.hit) > 0 and self.hit[0] == "s":
                 self.stand = True
+        self.stand = True
+        
+    def dealer_hand(self):
+        while dealer.score <=17:
+            dealer.player_cards.append([random.choice(cards), random.choice(suit)])
+            dealer.scoring()
         
 
     def hand_print(self):
@@ -50,9 +56,10 @@ class Hand:
         self.printable_hand = self.printable_hand[0:-2]
         clear()
         print(blackjack_title)
-        print(f"Dealer shows {dealer.player_cards[0][0]} of {dealer.player_cards[0][1]} \n")
+        if self.name != "Dealer":
+            print(f"Dealer shows {dealer.player_cards[0][0]} of {dealer.player_cards[0][1]} \n")
         print(self.printable_hand + "\nScore: " + str(self.score))
-    
+
     def scoring(self):
         self.score = 0
         for card in self.player_cards:
