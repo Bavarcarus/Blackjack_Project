@@ -25,7 +25,10 @@ class Hand:
     def __init__(self, name):
         self.name = name
         self.player_cards = [[random.choice(cards), random.choice(suit)], [random.choice(cards), random.choice(suit)]]
-        self.scoring()       
+        self.scoring()
+        self.wins = 0
+        self.losses = 0
+        self.play_again = True
 
     def __repr__(self):
         return f"{self.name}'s Blackjack game"
@@ -38,16 +41,19 @@ class Hand:
             if len(self.hit) > 0 and self.hit[0] == "h":
                 self.player_cards.append([random.choice(cards), random.choice(suit)])
                 self.scoring()
-                self.hand_print()
             elif len(self.hit) > 0 and self.hit[0] == "s":
                 self.stand = True
-        self.stand = True
+            self.hand_print()
         
-    def dealer_hand(self):
-        while dealer.score <=17:
-            dealer.player_cards.append([random.choice(cards), random.choice(suit)])
-            dealer.scoring()
-        
+    def dealer_hit(self):
+        if self.name == "Dealer":
+            self.hand_print()
+            while self.score < 17:
+                pause = input("<Press Enter to Continue>")
+                self.player_cards.append([random.choice(cards), random.choice(suit)])
+                self.scoring()
+                self.hand_print()
+
 
     def hand_print(self):
         self.printable_hand = f"{self.name}'s hand: \n"
@@ -58,19 +64,50 @@ class Hand:
         print(blackjack_title)
         if self.name != "Dealer":
             print(f"Dealer shows {dealer.player_cards[0][0]} of {dealer.player_cards[0][1]} \n")
-        print(self.printable_hand + "\nScore: " + str(self.score))
+            print(self.printable_hand + "\nScore: " + str(self.score) + " Wins: " + str(self.wins) + " Losses: " + str(self.losses))
+        if self.name == "Dealer":
+            print(self.printable_hand + "\nScore: " + str(self.score))
+            print(player_1.printable_hand + "\nScore: " + str(player_1.score) + " Wins: " + str(player_1.wins) + " Losses: " + str(player_1.losses))
 
     def scoring(self):
         self.score = 0
+        self.ace = False
         for card in self.player_cards:
             self.score += card_value[card[0]]
         for ace in self.player_cards:
             if 'Ace' in ace and self.score <= 11:
                 self.score += 10
+                self.ace = True
+    
+    def winner(self):
+        if self.score >= dealer.score and self.score <= 21 or self.score <= 21 and dealer.score > 21:
+            print(self.name + " Wins!")
+            self.wins += 1
+        else:
+            print("Dealer wins.")
+            self.losses += 1
+        play = input("Would you like to play again? Y/N")
+        try:
+            if play[0].lower() == "n":
+                self.play_again = False
+        except IndexError:
+            self.play_again = False
+        if self.play_again:
+            self.redeal()
+            dealer.redeal()
+    
+    def redeal(self):
+        self.player_cards = [[random.choice(cards), random.choice(suit)], [random.choice(cards), random.choice(suit)]]
+        self.scoring()
+
+
         
 clear()
 print(blackjack_title)
 player_1 = Hand(input("What should I call you?"))
 dealer = Hand("Dealer")
 
-player_1.hit_me()
+while player_1.play_again == True:
+    player_1.hit_me()
+    dealer.dealer_hit()
+    player_1.winner()
