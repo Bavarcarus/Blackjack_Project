@@ -86,12 +86,22 @@ class Hand:
         else:
             print("Dealer wins.")
             self.losses += 1
-        play = input("Would you like to play again? Y/N")
-        try:
-            if play[0].lower() == "n":
-                self.play_again = False
-        except IndexError:
-            self.play_again = False
+        play = ""
+        while not play:
+            play = input("Would you like to play again? Y/N")
+            try:
+                if play[0].lower() == "n":
+                    self.play_again = False
+                elif play[0].lower() != "y":
+                    play = ""
+                    clear()
+                    print(blackjack_title)
+                    print(f"{self.name} - Wins: {self.wins} Losses: {self.losses}")
+            except IndexError:
+                clear()
+                print(blackjack_title)
+                print(f"{self.name} - Wins: {self.wins} Losses: {self.losses}")
+                continue
         if self.play_again:
             self.redeal()
             dealer.redeal()
