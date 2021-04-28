@@ -123,7 +123,7 @@ class Hand:
         self.player_cards = [[random.choice(cards), random.choice(suit)], [random.choice(cards), random.choice(suit)]]
         self.scoring()
 
-
+first_round = True
 new_player = False       
 num_player = 0
 while num_player == 0:
@@ -143,13 +143,14 @@ player_4 = Hand("Player 4", "Seat 4")
 dealer = Hand("Dealer", "Seat 0")
 player_list = [player_1, player_2, player_3, player_4]
 active_players = []
-inactive_players = []
+inactive_players = [player_1, player_2, player_3, player_4]
 for n in range(num_player):
     active_players.append(player_list[n])
+    inactive_players.remove(player_list[n])
     active_players[n].name = input(f"What is {active_players[n].name}'s name?")
 
 while num_player > 0:
-    if num_player < 4:
+    if num_player < 4 and not first_round:
         new_player = True 
         while new_player:
             player_join = input(f"There are {len(inactive_players)} seats available, how many wish to join?")
@@ -171,6 +172,8 @@ while num_player > 0:
             except:
                 continue
         active_players.sort(key=lambda hand: hand.seat)
+    else:
+        first_round = False
 
     for player in active_players:
         player.hit_me()
